@@ -2,16 +2,26 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
 
+
 // 创建axios实例
 const http = axios.create({
   baseURL: 'http://127.0.0.1:8080',
   timeout: 0 // 请求超时时间
 })
 
+const TOKEN_KEY = 'jnc-cd-token'
+
+
 // request拦截器
 http.interceptors.request.use(
   config => {
-    // do something before request is sent
+    if (config.url == '/file/upload') {
+      config.headers['Content-Type'] = 'multipart/form-data'
+    }
+    const token = localStorage.getItem(TOKEN_KEY)
+    if (token != null) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return config
   },
   error => {
@@ -32,6 +42,7 @@ http.interceptors.response.use(
    * 您也可以通过HTTP状态码来判断状态
    */
   response => {
+    debugger;;
     const res = response.data
     if (res.code !== 0) {
       ElMessage({

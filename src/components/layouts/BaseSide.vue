@@ -4,6 +4,7 @@
     :default-active="$route.path"
     class="el-menu-vertical-demo"
     :collapse="isCollapse"
+    :style="{minWidth: '60px'}"
     @open="handleOpen"
     @close="handleClose"
   >

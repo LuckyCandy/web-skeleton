@@ -10,7 +10,7 @@
             </el-form-item>
 
             <el-form-item label="视频:" prop="video">
-                <el-upload class="upload-demo" drag action="http://127.0.0.1:8080/file/upload" ref="uploadRef" :limit="1"
+                <el-upload class="upload-demo" drag :http-request="fileUpload" ref="uploadRef" :limit="1"
                     :on-success="uploadSuccess" :on-error="uploadFail" :on-exceed="uploadLimit"
                     :on-remove="removeUploadFile">
                     <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -55,9 +55,10 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
-import { ElMessage, FormInstance, FormRules, UploadInstance, UploadFile, CheckboxValueType } from 'element-plus'
+import { ElMessage, FormInstance, FormRules, UploadInstance, UploadFile, CheckboxValueType, UploadRequestOptions } from 'element-plus'
 import CProgress from './progress/Progress.vue';
 import contentApi from '~/api/publish'
+import resourceApi from '~/api/resource';
 
 interface ProcessData {
     name: String,
@@ -105,6 +106,14 @@ const setProgressRef = (el: any, type: string) => {
     if (el) {
         progressRef[type] = el;
     }
+}
+
+// 文件上传
+const fileUpload = (options: UploadRequestOptions) => {
+    const { file, onProgress, onSuccess, onError } = options;
+    return resourceApi.upload(file)
+        .then((res) => onSuccess(res.data))
+        .catch(err => onError(err))
 }
 
 // 选择全部渠道
@@ -173,13 +182,12 @@ const resetForm = (uploadEl: UploadInstance | undefined) => {
 // 文件上传成功
 const uploadSuccess = (response: any, file: UploadFile) => {
     console.log("uploadSuccess", response, file.uid)
-    formData.video = response.data.file_key
+    formData.video = response.file_key
 }
 
 // 处理w上传失败
 const uploadFail = (err: any) => {
     console.log('上传失败', err)
-    ElMessage.error('上传失败，请稍后再试')
 }
 
 // 处理上传超过限制
