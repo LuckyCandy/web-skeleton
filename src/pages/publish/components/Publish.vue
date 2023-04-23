@@ -12,7 +12,7 @@
             <el-form-item label="视频:" prop="video">
                 <el-upload class="upload-demo" drag :http-request="fileUpload" ref="uploadRef" :limit="1"
                     :on-success="uploadSuccess" :on-error="uploadFail" :on-exceed="uploadLimit"
-                    :on-remove="removeUploadFile">
+                    :before-upload="beforeUpload" :on-remove="removeUploadFile">
                     <el-icon class="el-icon--upload"><upload-filled /></el-icon>
                     <div class="el-upload__text">
                         拖拽文件到这儿 或者 <em>点击上传</em>
@@ -55,7 +55,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
-import { ElMessage, FormInstance, FormRules, UploadInstance, UploadFile, CheckboxValueType, UploadRequestOptions } from 'element-plus'
+import { ElMessage, FormInstance, FormRules, UploadInstance, UploadFile, CheckboxValueType, UploadRequestOptions, UploadRawFile } from 'element-plus'
 import CProgress from './progress/Progress.vue';
 import contentApi from '~/api/publish'
 import resourceApi from '~/api/resource';
@@ -101,7 +101,7 @@ const checkAll = ref(false)
 const isIndeterminate = ref(true)
 
 // 进度控件
-const progressRef: {[key: string]: typeof CProgress} = {}
+const progressRef: { [key: string]: typeof CProgress } = {}
 const setProgressRef = (el: any, type: string) => {
     if (el) {
         progressRef[type] = el;
@@ -114,6 +114,17 @@ const fileUpload = (options: UploadRequestOptions) => {
     return resourceApi.upload(file)
         .then((res) => onSuccess(res.data))
         .catch(err => onError(err))
+}
+
+const beforeUpload = (file: UploadRawFile) => {
+    const isVideo = file.type.startsWith('video/')
+    if (!isVideo) {
+        ElMessage({
+            message: '仅允许上传视频文件~',
+            type: 'warning',
+        })
+    }
+    return isVideo
 }
 
 // 选择全部渠道

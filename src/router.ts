@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '~/pages/Home.vue'
-import Account from '~/pages/Account.vue'
 import Effect from '~/pages/Effect.vue'
 import Publish from '~/pages/publish/Index.vue'
+import Platform from '~/pages/platform/Index.vue'
 import Skeleton from '~/pages/Skeleton.vue'
 import Login from '~/pages/Login.vue'
 import { useUserStore } from "~/store/user"
@@ -14,7 +14,7 @@ const router = createRouter({
     {
       path: '', component: Skeleton, meta: { requireAuth: true }, children: [
         { path: '/', name: '首页', component: Home },
-        { path: '/account', name: '账号管理', component: Account },
+        { path: '/platform', name: '平台管理', component: Platform },
         { path: '/effect', name: '效果查看', component: Effect },
         { path: '/publish', name: '内容发布', component: Publish },
       ]

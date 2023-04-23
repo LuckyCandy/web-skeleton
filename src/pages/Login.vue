@@ -40,6 +40,9 @@ const isLoading = ref(false)
 const router = useRouter()
 
 const telephoneInput = debounce(() => {
+    if (credentials.value.telephone.length > 11) {
+        credentials.value.telephone = credentials.value.telephone.substring(0, 11)
+    }
     if (reg.test(credentials.value.telephone)) {
         canSubmit.value.teleCorrect = true
     } else {

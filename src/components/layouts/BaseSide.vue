@@ -8,9 +8,9 @@
     @open="handleOpen"
     @close="handleClose"
   >
-    <el-menu-item index="/account">
+    <el-menu-item index="/platform">
       <el-icon><user /></el-icon>
-      <template #title>账号管理</template>
+      <template #title>平台管理</template>
     </el-menu-item>
     <el-menu-item index="/publish">
       <el-icon><Promotion /></el-icon>
